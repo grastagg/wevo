@@ -34,3 +34,4 @@ if(BUILD_LOG)
 endif(BUILD_LOG)
 
 add_subdirectory(src bin)
+

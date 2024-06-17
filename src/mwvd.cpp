@@ -9,6 +9,8 @@
 #include "mwvd.h"
 #include "util.h"
 #include "log.h"
+#include "fstream"
+
 
 Ev::Ev(const Circular_arc_point_2 &arcPnt, const Root_of_2 &sqrdTime, 
        const SitePtr &site)
@@ -94,10 +96,10 @@ VorDiag::VorDiag(const std::string &inFilePath, bool bUseOverlay,
     std::chrono::high_resolution_clock::time_point t2 =
             std::chrono::high_resolution_clock::now();
 
-    if (bEnableView || !ipeFilePath.empty()) {
-        std::cout << "Computing Voronoi edges ...\n";
-        compVorEdges();
-    }
+    // if (bEnableView || !ipeFilePath.empty()) {
+    std::cout << "Computing Voronoi edges ...\n";
+    compVorEdges();
+    // }
 
     if (!ipeFilePath.empty()) {
         std::cout << "Writing output to " << ipeFilePath << " ...\n";
@@ -135,6 +137,18 @@ VorDiag::VorDiag(const std::string &inFilePath, bool bUseOverlay,
             << "\t" << m_invalidDomEvCnt << " invalid domination events, and\n"
             << "\t" << m_invalidEdgeEvCnt << " invalid edge events were ignored.\n"
             << "\t" << m_nVorVerts << " Voronoi nodes have been found.\n";
+
+
+
+    std::ofstream file = std::ofstream("output.txt");
+
+    std::cout << "Writing output to output.txt ...\n";
+
+    for(const auto &edge : m_vorEdges) {
+        file <<CGAL::to_double(edge.source().x()) << "," << CGAL::to_double(edge.source().y()) << "," << CGAL::to_double(edge.target().x())<<"," << CGAL::to_double(edge.target().y())<<"," << CGAL::to_double(edge.supporting_circle().center().x()) <<"," << CGAL::to_double(edge.supporting_circle().center().y()) << std::endl;
+    }
+    // file << 
+
 }
 
 void VorDiag::compColls(const std::vector<std::set<int>> &candSets) {

@@ -2,6 +2,10 @@ find_package(PkgConfig REQUIRED)
 find_package(Boost 1.58 REQUIRED COMPONENTS thread program_options graph)
 find_package(CGAL REQUIRED COMPONENTS Core)
 
+
+
+
+
 if(BUILD_LOG)
     find_package(Boost 1.58 REQUIRED COMPONENTS system log log_setup)
 endif(BUILD_LOG)
@@ -17,15 +21,19 @@ if(BUILD_VIEW)
     set(CMAKE_AUTOUIC ON)
     set(CMAKE_AUTORCC ON)
 endif(BUILD_VIEW)
-
-set(SOURCES bisector.cpp file_io.cpp isect.cpp graphml.cpp log.cpp main.cpp mwvd.cpp offcirc.cpp overlay.cpp sites.cpp timepnt.cpp traj.cpp util.cpp view.cpp)
 set (UIS mwvd.ui)
 set (RESOURCES mwvd.qrc)
+# set(SOURCES bisector.cpp file_io.cpp isect.cpp graphml.cpp log.cpp main.cpp mwvd.cpp offcirc.cpp overlay.cpp sites.cpp timepnt.cpp traj.cpp util.cpp view.cpp)
+set(SOURCES bisector.cpp file_io.cpp isect.cpp graphml.cpp log.cpp main.cpp mwvd.cpp offcirc.cpp overlay.cpp sites.cpp timepnt.cpp traj.cpp util.cpp view.cpp)
 
 if(CGAL_FOUND AND (CGAL_Qt5_FOUND OR NOT BUILD_VIEW))
     add_definitions(-DBOOST_ALL_DYN_LINK -DBOOST_LOG_DYN_LINK)
 
-    add_executable(wevo ${SOURCES} ${UIS} ${RESOURCES})
+    # add_executable(wevo ${SOURCES} ${UIS} ${RESOURCES})
+    add_library(wevo STATIC ${SOURCES} ${UIS} ${RESOURCES})
+    
+
+
 
     set_target_properties(wevo PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
@@ -39,6 +47,14 @@ if(CGAL_FOUND AND (CGAL_Qt5_FOUND OR NOT BUILD_VIEW))
         target_link_libraries(wevo CGAL::CGAL_Qt5)
         target_link_libraries (wevo Qt5::Core Qt5::Gui Qt5::Widgets Qt5::OpenGL Qt5::Svg)
     endif(BUILD_VIEW)
+
+
+    ##pybind stuff
+    find_package(pybind11 REQUIRED)
+    pybind11_add_module(wevo_py MODULE mypybind.cpp)
+    target_link_libraries(wevo_py PUBLIC wevo)
+    # target_include_directories(wevo_py PUBLIC src)
+
 else()
   message("ERROR: this program requires CGAL and CGAL_Qt5 and will not be compiled.")
 endif()

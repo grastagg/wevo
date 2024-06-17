@@ -75,3 +75,7 @@ real_life_inputs
 test/run_tests2.sh
 test/run_tests3.sh
 test/randomize_pnts_norm.py
+
+build/
+.vscode
+wevo

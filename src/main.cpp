@@ -7,7 +7,9 @@
 #include "mwvd.h"
 #include "log.h"
 
+
 namespace po = boost::program_options;
+
 
 int main(int argc, char *argv[]) {
 #ifdef ENABLE_LOGGING
